@@ -13,12 +13,17 @@ struct Habit: Identifiable {
     let id = UUID()
 }
 
-class Habits {
-    let habits: [Habit]
+
+class Habits: ObservableObject {
+    @Published var habits: [Habit]
     init() {
         self.habits = [
             Habit(name: "Shower", description: "Take shower everyday"),
             Habit(name: "Exercise", description: "Exercise 4 times a week")
         ]
+    }
+    func addHabit(name: String, description: String)
+    {
+        habits.append(Habit(name: name, description: description))
     }
 }
