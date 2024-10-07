@@ -8,14 +8,12 @@
 import SwiftUI
 
 struct ContentView: View {
+    let myHabits = Habits()
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        ForEach(myHabits.habits) { habit in
+            Text(habit.name)
+            Text(habit.description)
         }
-        .padding()
     }
 }
 
