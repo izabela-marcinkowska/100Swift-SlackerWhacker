@@ -10,33 +10,37 @@ import SwiftUI
 struct ContentView: View {
     @StateObject private var myHabits = Habits()
     
-     var body: some View {
-         NavigationStack {
-             List {
-                 Section ("Habits") {
-                     ForEach(myHabits.habits) { habit in
-                         NavigationLink(destination: HabitDetails(habit: habit)) {
-                             HStack {
-                                 VStack(alignment: .leading) {
-                                     Text(habit.name).font(.headline)
-                                     Text(habit.description)
-                                 }
-                             }
-                         }
-                     }
-                 }
-             }
-             .navigationTitle("SlackerWhacker")
-             .toolbar {
-                 NavigationLink("Add habit") {
-                     HabitForm(myHabits: myHabits)
-                 }
-             }
-         }
-         
+    var body: some View {
+        NavigationStack {
+            List {
+                Section("Habits") {
+                    ForEach($myHabits.habits) { $habit in
+                        NavigationLink(destination: HabitDetails(habit: $habit)) {
+                            HStack {
+                                VStack(alignment: .leading) {
+                                    Text(habit.name).font(.headline)
+                                    Text(habit.description)
+                                }
+                                Spacer()
+                                Text("\(habit.streak)")
+                            }
+                        }
+                    }
+                }
+            }
+            .navigationTitle("SlackerWhacker")
+            .toolbar {
+                NavigationLink("Add habit") {
+                    HabitForm(myHabits: myHabits)
+                }
+            }
+        }
+        .environmentObject(myHabits)
     }
 }
 
+
 #Preview {
     ContentView()
+        .environmentObject(Habits())  // Provide a mock instance for preview
 }

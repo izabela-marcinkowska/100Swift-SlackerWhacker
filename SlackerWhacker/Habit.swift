@@ -7,23 +7,17 @@
 
 import Foundation
 
-class Habit: Identifiable, ObservableObject, Hashable {
-    @Published var name: String
-    @Published var description: String
+struct Habit: Identifiable, Hashable {
+    var name: String
+    var description: String
+    var streak: Int = 0
+    var lastCompletionDate: Date? = nil
     let id = UUID()
     
-    init(name: String, description: String) {
-        self.name = name
-        self.description = description
+    mutating func markAsDone() {
+        streak += 1
+        lastCompletionDate = Date()
     }
-    
-    static func == (lhs: Habit, rhs: Habit) -> Bool {
-           lhs.id == rhs.id
-       }
-
-       func hash(into hasher: inout Hasher) {
-           hasher.combine(id)
-       }
 }
 
 
@@ -39,4 +33,8 @@ class Habits: ObservableObject {
     {
         habits.append(Habit(name: name, description: description))
     }
+    
+    func updateHabit() {
+            objectWillChange.send()  // Notify SwiftUI that something inside the list has changed
+        }
 }

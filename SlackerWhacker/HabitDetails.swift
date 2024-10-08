@@ -8,23 +8,39 @@
 import SwiftUI
 
 struct HabitDetails: View {
-    @ObservedObject var habit : Habit
+    @Binding var habit: Habit
     @Environment(\.dismiss) var dismiss
+
     var body: some View {
         NavigationStack {
             Form {
                 Text(habit.description)
+                Text("You have \(habit.streak) streak(s).")
+                Button("I did it today") {
+                    habit.markAsDone()
+                }
+                .disabled(isCompletedToday())
             }
+            
             .navigationTitle(habit.name)
-//            .toolbar {
-//                Button("Cancel") {
-//                    dismiss()
-//                }
-//            }
         }
+    }
+    private func isCompletedToday() -> Bool {
+            guard let lastCompletion = habit.lastCompletionDate else {
+                return false
+            }
+            return Calendar.current.isDateInToday(lastCompletion)
+        }
+}
+
+struct HabitDetails_PreviewWrapper: View {
+    @State private var habit = Habit(name: "Shower", description: "Take shower twice a day")
+    
+    var body: some View {
+        HabitDetails(habit: $habit)
     }
 }
 
 #Preview {
-    HabitDetails(habit: Habit(name: "Shower", description: "Take shower twice a day"))
+    HabitDetails_PreviewWrapper()
 }
