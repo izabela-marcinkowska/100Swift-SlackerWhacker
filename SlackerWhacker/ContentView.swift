@@ -12,10 +12,18 @@ struct ContentView: View {
     @State private var name: String = ""
     @State private var description: String = ""
      var body: some View {
-        ForEach(myHabits.habits) { habit in
-            Text(habit.name)
-            Text(habit.description)
-        }
+         List {
+             Section ("Habits") {
+                 ForEach(myHabits.habits) { habit in
+                     HStack {
+                         VStack(alignment: .leading) {
+                             Text(habit.name).font(.headline)
+                             Text(habit.description)
+                         }
+                     }
+                 }
+             }
+         }
         Form {
             TextField("Name", text: $name)
             TextField("Description", text: $description)
