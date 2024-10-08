@@ -14,6 +14,8 @@ struct HabitForm: View {
     
     @Environment(\.dismiss) var dismiss
     var body: some View {
+        NavigationStack{
+            
         Form {
             TextField("Name", text: $name)
             TextField("Description", text: $description)
@@ -21,6 +23,14 @@ struct HabitForm: View {
                 myHabits.addHabit(name: name, description: description)
                 dismiss()
             })
+        }
+        .navigationTitle("Add new habit")
+        .toolbar {
+            Button("Cancel") {
+                dismiss()
+            }
+        }
+        .navigationBarBackButtonHidden()
         }
     }
 }
