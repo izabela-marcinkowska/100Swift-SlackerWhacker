@@ -7,10 +7,23 @@
 
 import Foundation
 
-struct Habit: Identifiable {
-    let name: String
-    let description: String
+class Habit: Identifiable, ObservableObject, Hashable {
+    @Published var name: String
+    @Published var description: String
     let id = UUID()
+    
+    init(name: String, description: String) {
+        self.name = name
+        self.description = description
+    }
+    
+    static func == (lhs: Habit, rhs: Habit) -> Bool {
+           lhs.id == rhs.id
+       }
+
+       func hash(into hasher: inout Hasher) {
+           hasher.combine(id)
+       }
 }
 
 

@@ -15,10 +15,12 @@ struct ContentView: View {
              List {
                  Section ("Habits") {
                      ForEach(myHabits.habits) { habit in
-                         HStack {
-                             VStack(alignment: .leading) {
-                                 Text(habit.name).font(.headline)
-                                 Text(habit.description)
+                         NavigationLink(destination: HabitDetails(habit: habit)) {
+                             HStack {
+                                 VStack(alignment: .leading) {
+                                     Text(habit.name).font(.headline)
+                                     Text(habit.description)
+                                 }
                              }
                          }
                      }
