@@ -9,30 +9,32 @@ import SwiftUI
 
 struct HabitDetails: View {
     @Binding var habit: Habit
-    @Environment(\.dismiss) var dismiss
+    @EnvironmentObject var myHabits: Habits
 
     var body: some View {
-            NavigationStack {
-                VStack(alignment: .leading) {
-                    Text(habit.description)
-                        .padding(.horizontal) // Add horizontal padding to align with the form
-                    Form {
-                        Text("You have \(habit.streak) streak(s).")
-                        Button("I did it today") {
-                            habit.markAsDone()
-                        }
-                        .disabled(isCompletedToday())
+        NavigationStack {
+            VStack(alignment: .leading) {
+                Text(habit.description)
+                    .padding(.horizontal)
+
+                Form {
+                    Text("You have \(habit.streak) streak(s).")
+                    Button("I did it today") {
+                        myHabits.markHabitAsDone(habitId: habit.id)
                     }
+                    .disabled(isCompletedToday())
                 }
-                .navigationTitle(habit.name)
             }
+            .navigationTitle(habit.name)
         }
+    }
+
     private func isCompletedToday() -> Bool {
-            guard let lastCompletion = habit.lastCompletionDate else {
-                return false
-            }
-            return Calendar.current.isDateInToday(lastCompletion)
+        guard let lastCompletion = habit.lastCompletionDate else {
+            return false
         }
+        return Calendar.current.isDateInToday(lastCompletion)
+    }
 }
 
 struct HabitDetails_PreviewWrapper: View {

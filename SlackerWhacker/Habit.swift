@@ -6,13 +6,14 @@
 //
 
 import Foundation
+import SwiftUI
 
-struct Habit: Identifiable, Hashable {
+struct Habit: Identifiable, Hashable, Codable {
     var name: String
     var description: String
     var streak: Int = 0
     var lastCompletionDate: Date? = nil
-    let id = UUID()
+    var id: UUID = UUID()
     
     mutating func markAsDone() {
         streak += 1
@@ -20,21 +21,44 @@ struct Habit: Identifiable, Hashable {
     }
 }
 
-
 class Habits: ObservableObject {
-    @Published var habits: [Habit]
+    @Published var habits: [Habit] = []
+
+    @AppStorage("habitsData") private var habitsData: Data = Data()
+
     init() {
-        self.habits = [
-            Habit(name: "Shower", description: "Take shower everyday"),
-            Habit(name: "Exercise", description: "Exercise 4 times a week")
-        ]
-    }
-    func addHabit(name: String, description: String)
-    {
-        habits.append(Habit(name: name, description: description))
-    }
-    
-    func updateHabit() {
-            objectWillChange.send()  // Notify SwiftUI that something inside the list has changed
+        if let decodedHabits = try? JSONDecoder().decode([Habit].self, from: habitsData), !habitsData.isEmpty {
+            self.habits = decodedHabits
+        } else {
+            self.habits = [
+                Habit(name: "Shower", description: "Take a shower everyday"),
+                Habit(name: "Exercise", description: "Exercise 4 times a week")
+            ]
         }
+    }
+
+    func addHabit(name: String, description: String) {
+        habits.append(Habit(name: name, description: description))
+        saveHabits()
+    }
+
+    func removeHabit(at offsets: IndexSet) {
+        habits.remove(atOffsets: offsets)
+        saveHabits()
+    }
+
+    func markHabitAsDone(habitId: UUID) {
+        if let index = habits.firstIndex(where: { $0.id == habitId }) {
+            habits[index].markAsDone()
+            saveHabits()
+        }
+    }
+
+    private func saveHabits() {
+        if let encoded = try? JSONEncoder().encode(habits) {
+            habitsData = encoded
+        } else {
+            print("Failed to encode habits")
+        }
+    }
 }
