@@ -12,19 +12,21 @@ struct HabitDetails: View {
     @Environment(\.dismiss) var dismiss
 
     var body: some View {
-        NavigationStack {
-            Form {
-                Text(habit.description)
-                Text("You have \(habit.streak) streak(s).")
-                Button("I did it today") {
-                    habit.markAsDone()
+            NavigationStack {
+                VStack(alignment: .leading) {
+                    Text(habit.description)
+                        .padding(.horizontal) // Add horizontal padding to align with the form
+                    Form {
+                        Text("You have \(habit.streak) streak(s).")
+                        Button("I did it today") {
+                            habit.markAsDone()
+                        }
+                        .disabled(isCompletedToday())
+                    }
                 }
-                .disabled(isCompletedToday())
+                .navigationTitle(habit.name)
             }
-            
-            .navigationTitle(habit.name)
         }
-    }
     private func isCompletedToday() -> Bool {
             guard let lastCompletion = habit.lastCompletionDate else {
                 return false
