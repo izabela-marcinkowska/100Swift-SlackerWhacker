@@ -25,7 +25,7 @@ struct ContentView: View {
                                 Text("\(habit.streak)")
                             }
                         }
-                    }
+                    }.onDelete(perform: removeHabit)
                 }
             }
             .navigationTitle("SlackerWhacker")
@@ -36,6 +36,9 @@ struct ContentView: View {
             }
         }
         .environmentObject(myHabits)
+    }
+    func removeHabit(offset: IndexSet) {
+        myHabits.habits.remove(atOffsets: offset)
     }
 }
 
